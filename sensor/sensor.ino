@@ -3,14 +3,14 @@
 #include "MCP9808.h"
 #include <SPI.h>
 #include "RF24.h"
+#include <EEPROM.h>
 
 #define LED_PIN 0
 
-// Sensor addresses need to be unique per device and should
-// vary only in the first byte.
-// TODO: store the unique byte in EEPROM so it doesn't get overwritten,
-// and set fuses so EEPROM is preserved.
-byte sensorAddress[] = "1Sens";
+// Node addresses need to be unique per device and should
+// vary only in the first byte.  We're going to load the first
+// byte from EEPROM (set by another sketch) and modify the address
+byte nodeAddress[] = "*Sens";
 byte baseAddress[] = "1Base";
 RF24 radio(7,8);
 
@@ -18,25 +18,9 @@ MCP9808 sensor = MCP9808();
 
 void setup(void)
 {
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);
-
-  sensor.begin();
-  
-  radio.begin();
-  radio.setRetries(15,15);
-
-  radio.setPALevel(RF24_PA_MAX);
-  radio.setDataRate(RF24_250KBPS);
-  radio.setPayloadSize(sizeof(int16_t));
-  
-  radio.openWritingPipe(sensorAddress);
-  radio.openReadingPipe(1, baseAddress);
-
-  // Any communication to us is going to piggyback on ACKs
-  radio.stopListening();
-
-  threeFlashes();
+  initializePins();
+  loadNodeAddress();
+  initializePeripherals();
 }
 
 void loop(void)
@@ -47,14 +31,66 @@ void loop(void)
   longSleep();
 }
 
+void initializePins()
+{
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+}
+
+void initializePeripherals()
+{
+  sensor.begin();
+  
+  radio.begin();
+  radio.setRetries(15,15);
+
+  // TODO: can we start with a lower power level and boost if we're having issues?
+  radio.setPALevel(RF24_PA_MAX);
+  radio.setDataRate(RF24_250KBPS);
+  radio.setPayloadSize(sizeof(int16_t));
+  
+  radio.openWritingPipe(nodeAddress);
+  radio.openReadingPipe(1, baseAddress);
+
+  // Any communication to us is going to piggyback on ACKs
+  radio.stopListening();
+}
+
+void loadNodeAddress()
+{
+  byte nodeId = EEPROM.read(0);
+
+  if (nodeId < 1 || nodeId > 9)
+  {
+    blinkError();  
+  }
+  else
+  {
+    blinkIdCode(nodeId);
+  }
+
+  // convert id to ASCII digit
+  nodeAddress[0] = nodeId + 48;
+}
+
+void blinkError()
+{
+  while (1)
+  {
+    blinkIndicatorLed();
+    delay(200);
+  }
+}
+
 void sendTemperatureData()
 {
   int16_t temperatureAsInteger = sensor.readTempC() * 16;
 
+  // TODO: get voltage and send it too
   bool success = radio.write(&temperatureAsInteger, sizeof(int16_t));
   if (!success)
   {
-    flashIndicatorLed();
+    blinkIndicatorLed();
   }
 }
 
@@ -75,21 +111,20 @@ void wakePeripherals()
   radio.powerUp();
 }
 
-void flashIndicatorLed()
+void blinkIdCode(byte id)
 {
-  digitalWrite(LED_PIN, HIGH);
-  delay(15);
-  digitalWrite(LED_PIN, LOW);
+  for (byte i = 0; i < id; i++)
+  {
+    blinkIndicatorLed();
+    delay(350);
+  }
 }
 
-void threeFlashes()
+void blinkIndicatorLed()
 {
-  flashIndicatorLed();
-  delay(100);
-  flashIndicatorLed();
-  delay(100);
-  flashIndicatorLed();
-  delay(100);
+  digitalWrite(LED_PIN, HIGH);
+  delay(10);
+  digitalWrite(LED_PIN, LOW);
 }
 
 // For sleep info see http://www.gammon.com.au/power
