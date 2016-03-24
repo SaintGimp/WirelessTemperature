@@ -1,0 +1,9 @@
+*.b#?
+*.s#?
+*.l#?
+*.job
+*.scr
+*.pro
+*.lck
+\~\$*
+Thumbs.db
