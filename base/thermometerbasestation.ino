@@ -18,7 +18,8 @@
         do NOT connect more than 3.3V to pin 2(3V3)!!!
  */
 
-#define TIME_BETWEEN_UPDATES 2000
+#define TIME_BETWEEN_DISPLAY_UPDATES 2000
+#define TIME_BETWEEN_EVENT_PUBLISHING 60000
 #define NUMBER_OF_SENSORS 5
 #define SENSOR_ACTIVE_WINDOW 10000
 
@@ -29,22 +30,24 @@ byte baseAddress[] = "1Base";
 
 struct SensorData {
     int temperature;
+    int voltage;
     unsigned long timestamp;
 };
 
 SensorData readings[NUMBER_OF_SENSORS];
 unsigned long lastDisplayTime = 0;
 int lastDisplayedSensor = 0;
+unsigned long lastEventPublishTime = 0;
 
 void setup() {
     initializeDisplay();
     initializeRadio();
-    initializeCloud();
 }
 
 void loop() {
     receiveData();    
     displayReadings();
+    publishEvents();
 }
 
 void initializeDisplay() {
@@ -60,7 +63,7 @@ void initializeRadio() {
 
     radio.setPALevel(RF24_PA_MAX);
     radio.setDataRate(RF24_250KBPS);
-    radio.setPayloadSize(sizeof(int16_t));
+    radio.setPayloadSize(sizeof(int16_t) * 2);
 
     radio.openWritingPipe(baseAddress);
     for (int x = 0; x < NUMBER_OF_SENSORS; x++) {
@@ -70,23 +73,19 @@ void initializeRadio() {
     radio.startListening();
 }
 
-void initializeCloud() {
-    for (int x = 0; x < NUMBER_OF_SENSORS; x++) {
-        readings[x].temperature = -16000;
-        String name = String("temp") + String(x + 1);
-        Particle.variable(name, readings[x].temperature);
-    }
-}
-
 void receiveData() {
     int16_t temperature;
     
     uint8_t pipe_number;
+    int16_t buffer[2];
+    
     if (radio.available(&pipe_number)) {
-        radio.read(&temperature, sizeof(int16_t));
         uint8_t sensorNumber = pipe_number - 1;
+
+        radio.read(buffer, sizeof(buffer));
         
-        readings[sensorNumber].temperature = temperature;
+        readings[sensorNumber].temperature = buffer[0];
+        readings[sensorNumber].voltage = buffer[1];
         readings[sensorNumber].timestamp = millis();
         
         flashLed();
@@ -103,7 +102,7 @@ void flashLed() {
 void displayReadings() {
     unsigned long now = millis();
     
-    if (now - lastDisplayTime < TIME_BETWEEN_UPDATES) {
+    if (now - lastDisplayTime < TIME_BETWEEN_DISPLAY_UPDATES) {
         return;
     }
     
@@ -114,13 +113,19 @@ void displayReadings() {
     
     float celsius = readings[sensorToDisplay].temperature / 16.0;
     Serial1.write(0xFE);
-    Serial1.write(0x01);
+    Serial1.write(0x80);
     Serial1.print("Temp ");  
     Serial1.print(sensorToDisplay + 1);  
     Serial1.print(": ");  
     Serial1.print(celsius);  
-    Serial1.print(" C");
+    Serial1.print(" C ");
     
+    float voltage = readings[sensorToDisplay].voltage / 100.0;
+    Serial1.write(0xFE);
+    Serial1.write(0xC8);
+    Serial1.print(voltage);  
+    Serial1.print(" V ");
+
     lastDisplayedSensor = sensorToDisplay;
     lastDisplayTime = now;
 }
@@ -130,7 +135,7 @@ int getSensorToDisplay(unsigned long now, int startingSensor) {
     // wrapping if necessary, give up if we checked all of them.
     
     int nextSensor = (startingSensor + 1) % NUMBER_OF_SENSORS;
-    while (nextSensor != startingSensor) {
+    for (int x = 0; x < NUMBER_OF_SENSORS; x++) {
         if (readings[nextSensor].timestamp != 0 && now - readings[nextSensor].timestamp < SENSOR_ACTIVE_WINDOW) {
             return nextSensor;
         }
@@ -139,4 +144,33 @@ int getSensorToDisplay(unsigned long now, int startingSensor) {
     }
     
     return -1;
+}
+
+void publishEvents() {
+    unsigned long now = millis();
+    
+    if (now - lastEventPublishTime < TIME_BETWEEN_EVENT_PUBLISHING) {
+        return;
+    }
+
+    String data = "{";
+    for (int x = 0; x < NUMBER_OF_SENSORS; x++) {
+        int sensor = x + 1;
+        if (readings[x].timestamp != 0 && now - readings[x].timestamp < SENSOR_ACTIVE_WINDOW) {
+            data = data + "\"t" + sensor + "\":" + (readings[x].temperature / 16.0) + ",\"v" + sensor + "\":" + (readings[x].voltage / 100.0) + ",";
+        }
+        else {
+            data = data + "\"t" + sensor + "\":\"\",\"v" + sensor + "\":\"\",";
+        }
+    }
+    if (data.endsWith(",")) {
+        data.remove(data.length() - 1);
+    }
+    data = data + "}";
+    
+    // First run 'particle webhook create webhook.json' from shell
+    // View activity at https://dashboard.particle.io/user/logs
+    Particle.publish("temp-sensors", data, 60, PRIVATE);
+    
+    lastEventPublishTime = now;
 }

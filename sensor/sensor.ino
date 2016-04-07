@@ -7,6 +7,8 @@
 
 #define LED_PIN 0
 
+const long InternalReferenceVoltage = 1100;  // Adjust this value to your board's specific internal BG voltage
+
 // Node addresses need to be unique per device and should
 // vary only in the first byte.  We're going to load the first
 // byte from EEPROM (set by another sketch) and modify the address
@@ -26,7 +28,7 @@ void setup(void)
 void loop(void)
 { 
   wakePeripherals();
-  sendTemperatureData(); 
+  sendData(); 
   shutDownPeripherals();
   longSleep();
 }
@@ -47,7 +49,7 @@ void initializePeripherals()
   // TODO: can we start with a lower power level and boost if we're having issues?
   radio.setPALevel(RF24_PA_MAX);
   radio.setDataRate(RF24_250KBPS);
-  radio.setPayloadSize(sizeof(int16_t));
+  radio.setPayloadSize(sizeof(int16_t) * 2);
   
   radio.openWritingPipe(nodeAddress);
   radio.openReadingPipe(1, baseAddress);
@@ -82,12 +84,12 @@ void blinkError()
   }
 }
 
-void sendTemperatureData()
+void sendData()
 {
-  int16_t temperatureAsInteger = sensor.readTempC() * 16;
-
-  // TODO: get voltage and send it too
-  bool success = radio.write(&temperatureAsInteger, sizeof(int16_t));
+  int16_t buffer[2];
+  buffer[0] = sensor.readTempC() * 16;
+  buffer[1] = getBandgap();
+  bool success = radio.write(buffer, sizeof(buffer));
   if (!success)
   {
     blinkIndicatorLed();
@@ -177,5 +179,25 @@ void doSleep(const byte interval)
   sleep_disable();
 
   ADCSRA = old_ADCSRA;
+}
+ 
+int16_t getBandgap() 
+{
+  // See http://www.gammon.com.au/power
+
+  // REFS0 : Selects AVcc external reference
+  // MUX3 MUX2 MUX1 : Selects 1.1V (VBG)  
+  ADMUX = bit (REFS0) | bit (MUX3) | bit (MUX2) | bit (MUX1);
+  ADCSRA |= bit( ADSC );  // start conversion
+  
+  while (ADCSRA & bit (ADSC))
+  {
+    // wait for conversion to complete
+  }
+  int16_t results = (((InternalReferenceVoltage * 1024) / ADC) + 5) / 10; 
+  
+  // results are Vcc * 100
+  // So for example, 5V would be 500.
+  return results;
 }
 
