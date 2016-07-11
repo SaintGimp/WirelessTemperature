@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.5.0">
+<eagle version="7.6.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -730,8 +730,8 @@ MSOP&lt;br&gt;
 <wire x1="5.08" y1="-2.54" x2="5.08" y2="5.08" width="0.4064" layer="94"/>
 <wire x1="5.08" y1="5.08" x2="-5.08" y2="5.08" width="0.4064" layer="94"/>
 <wire x1="-5.08" y1="5.08" x2="-5.08" y2="-2.54" width="0.4064" layer="94"/>
-<text x="2.54" y="-5.08" size="1.778" layer="95">&gt;NAME</text>
-<text x="2.54" y="-7.62" size="1.778" layer="96">&gt;VALUE</text>
+<text x="-2.032" y="5.842" size="1.778" layer="95">&gt;NAME</text>
+<text x="2.54" y="-5.08" size="1.778" layer="96">&gt;VALUE</text>
 <text x="-2.032" y="-1.778" size="1.524" layer="95">GND</text>
 <text x="-4.445" y="1.905" size="1.524" layer="95">IN</text>
 <text x="0.635" y="1.905" size="1.524" layer="95">OUT</text>
@@ -815,6 +815,8 @@ MSOP&lt;br&gt;
 <pin name="GND" x="12.7" y="5.08" visible="pin" length="short" direction="pwr" rot="R180"/>
 <pin name="A0" x="12.7" y="2.54" visible="pin" length="short" direction="in" rot="R180"/>
 <pin name="A1" x="12.7" y="0" visible="pin" length="short" direction="in" rot="R180"/>
+<text x="-4.826" y="8.128" size="1.778" layer="95">&gt;NAME</text>
+<text x="-5.08" y="-7.62" size="1.778" layer="95">&gt;VALUE</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -1209,6 +1211,11 @@ Standard 6 pin header for ICSP programming</description>
 <sheets>
 <sheet>
 <plain>
+<wire x1="7.62" y1="33.02" x2="55.88" y2="33.02" width="0.8128" layer="97"/>
+<wire x1="55.88" y1="33.02" x2="55.88" y2="5.08" width="0.8128" layer="97"/>
+<wire x1="55.88" y1="5.08" x2="7.62" y2="5.08" width="0.8128" layer="97"/>
+<wire x1="7.62" y1="5.08" x2="7.62" y2="33.02" width="0.8128" layer="97"/>
+<text x="7.366" y="34.29" size="1.778" layer="97">Radio pin header interface</text>
 </plain>
 <instances>
 <instance part="J1" gate="1" x="17.78" y="25.4"/>
@@ -1223,33 +1230,33 @@ Standard 6 pin header for ICSP programming</description>
 <instance part="C1" gate="G$1" x="83.82" y="86.36" rot="R180"/>
 <instance part="C2" gate="G$1" x="55.88" y="43.18" rot="R90"/>
 <instance part="U1" gate="G$1" x="60.96" y="78.74"/>
-<instance part="ISP1" gate="G$1" x="111.76" y="78.74"/>
+<instance part="ISP1" gate="G$1" x="116.84" y="78.74"/>
 <instance part="X1" gate="2" x="35.56" y="73.66"/>
 <instance part="X1" gate="1" x="35.56" y="81.28"/>
 <instance part="R1" gate="G$1" x="63.5" y="53.34"/>
 <instance part="P+1" gate="VCC" x="53.34" y="53.34" rot="R90"/>
 <instance part="GND1" gate="1" x="63.5" y="-2.54" rot="R270"/>
 <instance part="GND2" gate="1" x="48.26" y="43.18" rot="R270"/>
-<instance part="D1" gate="1" x="147.32" y="30.48" rot="R90"/>
-<instance part="R2" gate="G$1" x="137.16" y="30.48"/>
+<instance part="D1" gate="1" x="147.32" y="27.94" rot="R90"/>
+<instance part="R2" gate="G$1" x="137.16" y="27.94"/>
 <instance part="GND3" gate="1" x="60.96" y="71.12"/>
 <instance part="GND4" gate="1" x="43.18" y="73.66" rot="R90"/>
 <instance part="GND5" gate="1" x="83.82" y="93.98" rot="R180"/>
 <instance part="P+2" gate="VCC" x="91.44" y="81.28" rot="R270"/>
-<instance part="GND6" gate="1" x="127" y="71.12"/>
-<instance part="P+3" gate="VCC" x="127" y="86.36"/>
+<instance part="GND6" gate="1" x="132.08" y="71.12"/>
+<instance part="P+3" gate="VCC" x="132.08" y="86.36"/>
 <instance part="GND7" gate="1" x="25.4" y="25.4" rot="R90"/>
 <instance part="P+4" gate="VCC" x="45.72" y="25.4" rot="R270"/>
-<instance part="GND8" gate="1" x="152.4" y="30.48" rot="R90"/>
+<instance part="GND8" gate="1" x="152.4" y="27.94" rot="R90"/>
 <instance part="IC2" gate="G$1" x="144.78" y="40.64"/>
 <instance part="P+5" gate="VCC" x="132.08" y="58.42"/>
 <instance part="GND10" gate="1" x="162.56" y="38.1" rot="R90"/>
 <instance part="C3" gate="G$1" x="139.7" y="53.34" rot="R90"/>
 <instance part="GND9" gate="1" x="144.78" y="53.34" rot="R90"/>
-<instance part="C4" gate="G$1" x="45.72" y="83.82"/>
+<instance part="C4" gate="G$1" x="45.72" y="86.36"/>
 <instance part="C5" gate="G$1" x="71.12" y="86.36"/>
 <instance part="GND11" gate="1" x="71.12" y="93.98" rot="R180"/>
-<instance part="GND12" gate="1" x="45.72" y="91.44" rot="R180"/>
+<instance part="GND12" gate="1" x="45.72" y="93.98" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -1290,7 +1297,7 @@ Standard 6 pin header for ICSP programming</description>
 <segment>
 <pinref part="ISP1" gate="G$1" pin="VCC"/>
 <pinref part="P+3" gate="VCC" pin="VCC"/>
-<wire x1="127" y1="83.82" x2="127" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="83.82" x2="132.08" y2="81.28" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="J2" gate="1" pin="KL"/>
@@ -1340,7 +1347,7 @@ Standard 6 pin header for ICSP programming</description>
 <segment>
 <pinref part="ISP1" gate="G$1" pin="GND"/>
 <pinref part="GND6" gate="1" pin="GND"/>
-<wire x1="127" y1="73.66" x2="127" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="73.66" x2="132.08" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="J1" gate="1" pin="KL"/>
@@ -1386,6 +1393,7 @@ Standard 6 pin header for ICSP programming</description>
 <pinref part="X1" gate="1" pin="KL"/>
 <wire x1="53.34" y1="81.28" x2="45.72" y2="81.28" width="0.1524" layer="91"/>
 <pinref part="C4" gate="G$1" pin="2"/>
+<wire x1="45.72" y1="83.82" x2="45.72" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="81.28" x2="40.64" y2="81.28" width="0.1524" layer="91"/>
 <junction x="45.72" y="81.28"/>
 </segment>
@@ -1393,7 +1401,7 @@ Standard 6 pin header for ICSP programming</description>
 <net name="MOSI" class="0">
 <segment>
 <pinref part="ISP1" gate="G$1" pin="MOSI"/>
-<wire x1="127" y1="78.74" x2="129.54" y2="78.74" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="78.74" x2="134.62" y2="78.74" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="J2" gate="3" pin="KL"/>
@@ -1409,7 +1417,7 @@ Standard 6 pin header for ICSP programming</description>
 <net name="MISO" class="0">
 <segment>
 <pinref part="ISP1" gate="G$1" pin="MISO"/>
-<wire x1="99.06" y1="81.28" x2="96.52" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="81.28" x2="101.6" y2="81.28" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="J1" gate="4" pin="KL"/>
@@ -1425,7 +1433,7 @@ Standard 6 pin header for ICSP programming</description>
 <net name="SCK" class="0">
 <segment>
 <pinref part="ISP1" gate="G$1" pin="SCK"/>
-<wire x1="99.06" y1="78.74" x2="96.52" y2="78.74" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="78.74" x2="101.6" y2="78.74" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="J1" gate="3" pin="KL"/>
@@ -1441,7 +1449,7 @@ Standard 6 pin header for ICSP programming</description>
 <net name="RST" class="0">
 <segment>
 <pinref part="ISP1" gate="G$1" pin="RST"/>
-<wire x1="99.06" y1="76.2" x2="96.52" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="76.2" x2="101.6" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC1" gate="U$1" pin="PC6(/RESET)"/>
@@ -1518,7 +1526,9 @@ Standard 6 pin header for ICSP programming</description>
 <segment>
 <pinref part="R2" gate="G$1" pin="1"/>
 <pinref part="IC1" gate="U$1" pin="PD0(RXD)"/>
-<wire x1="132.08" y1="30.48" x2="119.38" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="27.94" x2="124.46" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="27.94" x2="124.46" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="30.48" x2="119.38" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
