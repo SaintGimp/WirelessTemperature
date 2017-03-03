@@ -1,3 +1,5 @@
+// This #include statement was automatically added by the Particle IDE.
+#include "LiquidCrystal_I2C_Spark/LiquidCrystal_I2C_Spark.h"
 // https://github.com/stewarthou/Particle-RF24
 #include "particle-rf24.h"
 
@@ -36,8 +38,12 @@ struct SensorData {
 
 SensorData readings[NUMBER_OF_SENSORS];
 unsigned long lastDisplayTime = 0;
+unsigned long lastDisplayResetTime = 0;
 int lastDisplayedSensor = 0;
 unsigned long lastEventPublishTime = 0;
+int missedReadings = -1;
+
+LiquidCrystal_I2C *lcd;
 
 void setup() {
     initializeDisplay();
@@ -51,11 +57,16 @@ void loop() {
 }
 
 void initializeDisplay() {
-    Serial1.begin(9600);
+    lcd = new LiquidCrystal_I2C(0x3F, 16, 2);
+    lcd->init();
+    lcd->backlight();
+    lcd->clear();
+    lcd->print("Waiting for data");
+}
 
-    Serial1.write(0xFE);
-    Serial1.write(0x01);
-    Serial1.print("Waiting for data");
+void resetDisplay() {
+    lcd->init();
+    lcd->clear();
 }
 
 void initializeRadio() {
@@ -106,25 +117,30 @@ void displayReadings() {
         return;
     }
     
+    if (now - lastDisplayResetTime > 60000) {
+        resetDisplay();
+        lastDisplayResetTime = now;
+    }
+    
     int sensorToDisplay = getSensorToDisplay(now, lastDisplayedSensor);
     if (sensorToDisplay < 0) {
         return;
     }
     
     float celsius = readings[sensorToDisplay].temperature / 16.0;
-    Serial1.write(0xFE);
-    Serial1.write(0x80);
-    Serial1.print("Temp ");  
-    Serial1.print(sensorToDisplay + 1);  
-    Serial1.print(": ");  
-    Serial1.print(celsius);  
-    Serial1.print(" C ");
+    lcd->setCursor(0,0);
+    lcd->print("Temp ");  
+    lcd->print(sensorToDisplay + 1);  
+    lcd->print(": ");  
+    lcd->print(celsius);  
+    lcd->print(" C ");
     
     float voltage = readings[sensorToDisplay].voltage / 100.0;
-    Serial1.write(0xFE);
-    Serial1.write(0xC8);
-    Serial1.print(voltage);  
-    Serial1.print(" V ");
+    lcd->setCursor(0,1);
+    lcd->print(voltage);
+    lcd->print(" V  ");
+    lcd->print(missedReadings);  
+    lcd->print("  ");
 
     lastDisplayedSensor = sensorToDisplay;
     lastDisplayTime = now;
@@ -137,9 +153,17 @@ int getSensorToDisplay(unsigned long now, int startingSensor) {
     int nextSensor = (startingSensor + 1) % NUMBER_OF_SENSORS;
     for (int x = 0; x < NUMBER_OF_SENSORS; x++) {
         if (readings[nextSensor].timestamp != 0 && now - readings[nextSensor].timestamp < SENSOR_ACTIVE_WINDOW) {
+            if (missedReadings == -1)
+            {
+                missedReadings = 0;
+            }
+
             return nextSensor;
         }
-        
+        if (nextSensor == 2 && missedReadings >= 0)
+        {
+            missedReadings++;
+        }
         nextSensor = (nextSensor + 1) % NUMBER_OF_SENSORS;
     }
     

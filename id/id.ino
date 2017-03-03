@@ -8,6 +8,7 @@
 
 #define LED_PIN 0
 
+// Set this id to an integer between 1 and 9 before uploading to uniquely identify this node
 byte nodeId = 0;
 
 void setup() {
