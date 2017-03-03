@@ -8,7 +8,8 @@
 
 #define LED_PIN 0
 
-// Set this id to an integer between 1 and 9 before uploading to uniquely identify this node
+// Edit this line to set an ID value between 1 and 9 to uniquely identify this node, this will
+// become the stored ID of the sensor node after it runs this sketch
 byte nodeId = 0;
 
 void setup() {
