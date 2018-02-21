@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.5.0">
+<eagle version="8.6.3">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.005" altunitdist="inch" altunit="inch"/>
@@ -552,10 +553,11 @@ Please make sure your boards conform to these design rules.</description>
 <param name="slThermalsForVias" value="0"/>
 <param name="dpMaxLengthDifference" value="10mm"/>
 <param name="dpGapFactor" value="2.5"/>
-<param name="checkGrid" value="0"/>
 <param name="checkAngle" value="0"/>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
+<param name="checkStop" value="0"/>
+<param name="checkValues" value="0"/>
 <param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
@@ -674,7 +676,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R1" library="SaintGimp" package="RESISTOR-0805" value="10K" x="31.75" y="13.97" smashed="yes" rot="R270">
 <attribute name="NAME" x="30.988" y="16.3195" size="0.8128" layer="25"/>
 </element>
-<element name="R2" library="SaintGimp" package="RESISTOR-0805" value="150R" x="34.925" y="13.97" smashed="yes" rot="R90">
+<element name="R2" library="SaintGimp" package="RESISTOR-0805" value="330R" x="34.925" y="13.97" smashed="yes" rot="R90">
 <attribute name="NAME" x="34.163" y="16.3195" size="0.8128" layer="25"/>
 </element>
 <element name="U1" library="SaintGimp" package="SOT-23-3" value="MCP1700-3.0V" x="5.715" y="13.97" smashed="yes" rot="R90">

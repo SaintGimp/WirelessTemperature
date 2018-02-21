@@ -1,12 +1,12 @@
 Part Value         Device         Package          PartNumber          
-C1   100uF         CAP-POL-2.5-6  CAP-POL-2.5-6     
-C2   1uF           CAPACITOR-0805 CAPACITOR-0805       
-C3   1uF           CAPACITOR-0805 CAPACITOR-0805       
-C4   1uF           CAPACITOR-0805 CAPACITOR-0805       
-C5   1uF           CAPACITOR-0805 CAPACITOR-0805       
-D1   LED-0805      LED-0805       LED-0805                              
+C1   100uF         CAP-POL-2.5-6  CAP-POL-2.5-6    generic, 10V
+C2   1uF           CAPACITOR-0805 CAPACITOR-0805   generic, X7R-type preferred
+C3   1uF           CAPACITOR-0805 CAPACITOR-0805   generic, X7R-type preferred    
+C4   1uF           CAPACITOR-0805 CAPACITOR-0805   generic, X7R-type preferred
+C5   1uF           CAPACITOR-0805 CAPACITOR-0805   generic, X7R-type preferred
+D1   LED-0805      LED-0805       LED-0805         LS R976-NR-1 (or equivalent)                     
 IC1  ATMEGA328P-AU ATMEGA328P-AU  QFP32-08         ATMEGA328P-AU                     
 IC2  MCP9808       MCP9808        MSOP8-0.65-3X3MM MCP9808T-E/MS                     
-R1   10K           RESISTOR-0805  RESISTOR-0805                         
-R2   150R          RESISTOR-0805  RESISTOR-0805                         
+R1   10K           RESISTOR-0805  RESISTOR-0805    generic                     
+R2   330R          RESISTOR-0805  RESISTOR-0805    generic                     
 U1   MCP1700-3.0V  MCP1700-SOT23  SOT-23-3         MCP1700T-3002E/TT                     
