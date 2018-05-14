@@ -4,7 +4,7 @@
 // 8MHz internal clock
 // Preserve EEPROM memory
 // BOD 2.7V
-// avrdude -c usbtiny -p m328p -U lfuse:w:0xe2:m -U hfuse:w:0xd1:m -U efuse:w:0x05:m
+// avrdude -c usbtiny -p m328p -U lfuse:w:0xe2:m -U hfuse:w:0xd1:m -U efuse:w:0xFD:m
 
 #define LED_PIN 0
 
