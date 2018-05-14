@@ -5,6 +5,18 @@
 #include "RF24.h"
 #include <EEPROM.h>
 
+// Required libraries:
+// RF24 by TMRh20 (tested with version 1.3.1)
+
+// Required board core:
+// https://github.com/oshlab/Breadboard-Arduino (or other ATMEGA328P 8 MHz core)
+
+// Expected fuses: http://www.engbedded.com/fusecalc
+// 8MHz internal clock
+// Preserve EEPROM memory
+// BOD 2.7V
+// avrdude -c usbtiny -p m328p -U lfuse:w:0xe2:m -U hfuse:w:0xd1:m -U efuse:w:0xfd:m
+
 #define LED_PIN 0
 
 const long InternalReferenceVoltage = 1100;  // Adjust this value to your board's specific internal BG voltage
