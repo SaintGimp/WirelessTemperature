@@ -1,5 +1,8 @@
 #include <EEPROM.h>
 
+// Required board core:
+// https://github.com/oshlab/Breadboard-Arduino (or other ATMEGA328P 8 MHz core)
+
 // Expected fuses: http://www.engbedded.com/fusecalc
 // 8MHz internal clock
 // Preserve EEPROM memory
