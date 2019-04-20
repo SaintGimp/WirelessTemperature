@@ -7,5 +7,7 @@
 *.lck
 \~\$*
 Thumbs.db
-.vscode/*
 .DS_Store
+target/
+*firmware*.bin
+ipch/

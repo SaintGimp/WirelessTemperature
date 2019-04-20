@@ -1,5 +1,7 @@
+#include "application.h"
+#line 1 "/Users/elee/Projects/SaintGimp/WirelessTemperature/base/src/base.ino"
 // This #include statement was automatically added by the Particle IDE.
-#include "LiquidCrystal_I2C_Spark/LiquidCrystal_I2C_Spark.h"
+#include "LiquidCrystal_I2C_Spark.h"
 // https://github.com/stewarthou/Particle-RF24
 #include "particle-rf24.h"
 
@@ -20,6 +22,17 @@
         do NOT connect more than 3.3V to pin 2(3V3)!!!
  */
 
+void setup();
+void loop();
+void initializeDisplay();
+void resetDisplay();
+void initializeRadio();
+void receiveData();
+void flashLed();
+void displayReadings();
+int getSensorToDisplay(unsigned long now, int startingSensor);
+void publishEvents();
+#line 23 "/Users/elee/Projects/SaintGimp/WirelessTemperature/base/src/base.ino"
 #define TIME_BETWEEN_DISPLAY_UPDATES 2000
 #define TIME_BETWEEN_EVENT_PUBLISHING 60000
 #define NUMBER_OF_SENSORS 5
