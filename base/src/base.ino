@@ -45,6 +45,9 @@ int missedReadings = -1;
 
 LiquidCrystal_I2C *lcd;
 
+SYSTEM_MODE(AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+
 void setup() {
     initializeDisplay();
     initializeRadio();
@@ -85,8 +88,6 @@ void initializeRadio() {
 }
 
 void receiveData() {
-    int16_t temperature;
-    
     uint8_t pipe_number;
     int16_t buffer[2];
     
