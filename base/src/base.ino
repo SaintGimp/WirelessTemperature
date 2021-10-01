@@ -178,24 +178,31 @@ void publishEvents() {
         return;
     }
 
-    String data = "{";
+    char buffer[1024];
+    memset(buffer, 0, sizeof(buffer));
+    JSONBufferWriter writer(buffer, sizeof(buffer) - 1);
+    writer.beginObject();
+
     for (int x = 0; x < NUMBER_OF_SENSORS; x++) {
         int sensor = x + 1;
+        String temperature_name = "t" + String(sensor);
+        String voltage_name = "v" + String(sensor);
+
         if (readings[x].timestamp != 0 && now - readings[x].timestamp < SENSOR_ACTIVE_WINDOW) {
-            data = data + "\"t" + sensor + "\":" + (readings[x].temperature / 16.0) + ",\"v" + sensor + "\":" + (readings[x].voltage / 100.0) + ",";
+            writer.name(temperature_name).value(readings[x].temperature / 16.0);
+            writer.name(voltage_name).value(readings[x].voltage / 100.0);
         }
         else {
-            data = data + "\"t" + sensor + "\":\"\",\"v" + sensor + "\":\"\",";
+            writer.name(temperature_name).value("");
+            writer.name(voltage_name).value("");
         }
     }
-    if (data.endsWith(",")) {
-        data.remove(data.length() - 1);
-    }
-    data = data + "}";
+
+    writer.endObject();
     
     // First run 'particle webhook create webhook.json' from shell
     // View activity at https://dashboard.particle.io/user/logs
-    Particle.publish("temp-sensors", data, 60, PRIVATE);
+    Particle.publish("temp-sensors", buffer, PRIVATE);
     
     lastEventPublishTime = now;
 }
